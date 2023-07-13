@@ -28,7 +28,13 @@ public class Bot extends Player {
                             break;
                         } else if (discard.getType().equals(Type.GREEN) || discard.getType().equals(Type.YELLOW)
                                 || discard.getType().equals(Type.RED) || discard.getType().equals(Type.BLUE)) {
-                            if (discard.getNumber() == card.getNumber()) {
+                            if ((!card.getType().equals(Type.COLORCHANGE) && !card.getType().equals(Type.GREEN_PLUS2)
+                                    && !card.getType().equals(Type.BLUE_PLUS2) && !card.getType().equals(Type.RED_PLUS2)
+                                    && !card.getType().equals(Type.YELLOW_PLUS2) && !card.getType().equals(Type.RED_PASS)
+                                    && !card.getType().equals(Type.GREEN_PASS) && !card.getType().equals(Type.BLUE_PASS)
+                                    && !card.getType().equals(Type.YELLOW_PASS) && !card.getType().equals(Type.RED_REVERSE)
+                                    && !card.getType().equals(Type.BLUE_REVERSE) && !card.getType().equals(Type.GREEN_REVERSE)
+                                    && !card.getType().equals(Type.YELLOW_REVERSE)) && discard.getNumber() == card.getNumber()) {
                                 cardToPlay = card;
                                 System.out.println(cardToPlay);
                                 TimeUnit.SECONDS.sleep(1);

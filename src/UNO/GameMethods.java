@@ -85,6 +85,7 @@ public class GameMethods {
     public static void setBlocked(boolean blocked) {
         GameMethods.blocked = blocked;
     }
+
     Helpdesk helpdesk = new Helpdesk();
 
     public void prepareGame() {
@@ -105,7 +106,7 @@ public class GameMethods {
 
     }
 
-    public void prepareNextRound(){
+    public void prepareNextRound() {
         putAllCardsBackIntoCardDeck();
         cardDeck.shuffleCards();
         cardDeck.distributeCards(playerList, cardDeck);
@@ -117,7 +118,7 @@ public class GameMethods {
     }
 
     public void putAllCardsBackIntoCardDeck() {
-        for(int i = 1; i<=4; i++){
+        for (int i = 1; i <= 4; i++) {
             Player player = playerList.getPlayerByID(i);
             cardDeck.cardDeck.addAll(player.cardsInHand);
             player.cardsInHand.removeAll(player.cardsInHand);
@@ -158,7 +159,7 @@ public class GameMethods {
                     setColor(color);
                 } else { // color will be entered if player in human
                     Scanner input = new Scanner(System.in);
-                    String color = input.nextLine();
+                    String color = input.nextLine().toUpperCase();
                     setColor(color);
                 }
             }
@@ -235,7 +236,13 @@ public class GameMethods {
             }
         } else if (discard.getType().equals(Type.GREEN) || discard.getType().equals(Type.YELLOW)
                 || discard.getType().equals(Type.RED) || discard.getType().equals(Type.BLUE)) {
-            if (discard.getNumber() == card.getNumber()) {
+            if ((!card.getType().equals(Type.COLORCHANGE) && !card.getType().equals(Type.GREEN_PLUS2)
+                    && !card.getType().equals(Type.BLUE_PLUS2) && !card.getType().equals(Type.RED_PLUS2)
+                    && !card.getType().equals(Type.YELLOW_PLUS2) && !card.getType().equals(Type.RED_PASS)
+                    && !card.getType().equals(Type.GREEN_PASS) && !card.getType().equals(Type.BLUE_PASS)
+                    && !card.getType().equals(Type.YELLOW_PASS) && !card.getType().equals(Type.RED_REVERSE)
+                    && !card.getType().equals(Type.BLUE_REVERSE) && !card.getType().equals(Type.GREEN_REVERSE)
+                    && !card.getType().equals(Type.YELLOW_REVERSE)) && discard.getNumber() == card.getNumber()){
                 chosenCardValid = true;
             }
         } else { //if player chose a card that is not valid based on what is on the top of discard deck
@@ -596,7 +603,6 @@ public class GameMethods {
     }
 
 
-
     public static boolean passCardCheck() {
         Player currentPlayer = getCurrentPlayer();
         Card c1 = currentPlayer.getPlayedCard();
@@ -731,15 +737,22 @@ public class GameMethods {
 
         for (Card card : currentPlayer.cardsInHand) {
             if (discard.getType().equals(card.getType()) || card.getType().equals(Type.PLUS_4)
-                    || card.getType().equals(Type.COLORCHANGE) || card.getType().name().charAt(0) == discard.getType().name().charAt(0)
+                    || card.getType().equals(Type.COLORCHANGE) || discard.getType().name().charAt(0) == card.getType().name().charAt(0)
                     || (discard.getType().name().endsWith("PASS") && card.getType().name().endsWith("PASS"))
                     || (discard.getType().name().endsWith("2") && card.getType().name().endsWith("2"))
                     || (discard.getType().name().endsWith("REVERSE") && card.getType().name().endsWith("REVERSE"))) {
                 isValid = true;
                 break;
-            } else if (discard.getType().equals(Type.GREEN) || discard.getType().equals(Type.YELLOW)
-                    || discard.getType().equals(Type.RED) || discard.getType().equals(Type.BLUE)) {
-                if (discard.getNumber() == card.getNumber()) {
+            } else if ((discard.getType().equals(Type.GREEN) || discard.getType().equals(Type.YELLOW)
+                    || discard.getType().equals(Type.RED) || discard.getType().equals(Type.BLUE))) {
+
+                if ((!card.getType().equals(Type.COLORCHANGE) && !card.getType().equals(Type.GREEN_PLUS2)
+                        && !card.getType().equals(Type.BLUE_PLUS2) && !card.getType().equals(Type.RED_PLUS2)
+                        && !card.getType().equals(Type.YELLOW_PLUS2) && !card.getType().equals(Type.RED_PASS)
+                        && !card.getType().equals(Type.GREEN_PASS) && !card.getType().equals(Type.BLUE_PASS)
+                        && !card.getType().equals(Type.YELLOW_PASS) && !card.getType().equals(Type.RED_REVERSE)
+                        && !card.getType().equals(Type.BLUE_REVERSE) && !card.getType().equals(Type.GREEN_REVERSE)
+                        && !card.getType().equals(Type.YELLOW_REVERSE)) && discard.getNumber() == card.getNumber()){
                     isValid = true;
                     break;
                 }
@@ -808,7 +821,7 @@ public class GameMethods {
         if (discardPile.getSizeofDiscardPile() > 1) {
             if ((discardPile.getDiscardPile().get(1).getType().equals(Type.COLORCHANGE)
                     || discardPile.getDiscardPile().get(1).getType().equals(Type.PLUS_4)) && (!discardPile.getDiscardPile().get(0).getType().equals(Type.COLORCHANGE)
-                    && !discardPile.getDiscardPile().get(0).getType().equals(Type.PLUS_4)) ) {
+                    && !discardPile.getDiscardPile().get(0).getType().equals(Type.PLUS_4))) {
                 setColor(null);
             }
         }
@@ -822,7 +835,7 @@ public class GameMethods {
             System.out.println("You have only one card left in your hand! Tres, dos, ...");
             if (currentPlayer instanceof Human) {
                 string = scanner.next().toLowerCase();
-            }else {
+            } else {
                 string = "uno";
                 System.out.println("uno");
             }
@@ -849,8 +862,8 @@ public class GameMethods {
         return noMoreCardsInHand;
     }
 
-    public void shuffleCardsWhenCardDeckIsEmpty(){ //checks if the CardDeck is empty and puts the discard pile cards back into the CardDeck
-        if(cardDeck.getSizeofCardDeck()== 0){
+    public void shuffleCardsWhenCardDeckIsEmpty() { //checks if the CardDeck is empty and puts the discard pile cards back into the CardDeck
+        if (cardDeck.getSizeofCardDeck() == 0) {
             cardDeck.cardDeck.addAll(discardPile.getDiscardPile());
             DiscardPile.discardPile.removeAll(discardPile.getDiscardPile());
             cardDeck.shuffleCards();

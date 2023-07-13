@@ -86,3 +86,5 @@ Farbenwahlkarte 50 Punkte
 Zieh Vier Farbenwahlkarte 50 Punkte
 Wer als erster 500 Punkte erreicht gewinnt das Spiel.
 Neben den Standard-Regeln von UNO gibt es noch jede Menge Abwandlungen und Varianten.
+
+----------------------------------------------------------------------------------------------
