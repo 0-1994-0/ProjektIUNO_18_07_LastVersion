@@ -23,6 +23,7 @@ public class GameMethods {
         return nextRound;
     }
 
+
     static boolean blocked;
     protected static boolean nextRound;
 
@@ -84,7 +85,7 @@ public class GameMethods {
     public static void setBlocked(boolean blocked) {
         GameMethods.blocked = blocked;
     }
-
+    Helpdesk helpdesk = new Helpdesk();
 
     public void prepareGame() {
         cardDeck.createCards(Type.YELLOW);
@@ -134,6 +135,7 @@ public class GameMethods {
         setCurrentPlayer(getPlayerByIndex(initialPlayerIndex));
         //   setPreviousPayer(isReverseCard());
         System.out.println(getPlayerByIndex(currentPlayerIndex).getName() + ",you start the game. ");
+        helpdesk.helpFile();
     }
 
     public void putFirstCardOnTable() {
@@ -357,6 +359,7 @@ public class GameMethods {
                 if (hasValidCardToPlay()) {
                     System.out.println(currentPlayer);
                     currentPlayer.printCardsInHand();
+                    helpdesk.helpFile();
                     System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play: ");
                     if (currentPlayer instanceof Bot) {
                         Card cardToPlay = botPlaysCard();
