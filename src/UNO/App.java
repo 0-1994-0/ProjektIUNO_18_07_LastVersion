@@ -12,6 +12,13 @@ public class App {
     private boolean exit = false;
     private boolean roundOver;
 
+    public boolean isRoundOver() {
+        return roundOver;
+    }
+
+    public void setRoundOver(boolean roundOver) {
+        this.roundOver = roundOver;
+    }
 
     GameMethods gameMethods = new GameMethods();
 
@@ -27,14 +34,18 @@ public class App {
         printState();
 
         while(!exit) {
-                readUserInput();
-                updateState();
+            gameMethods.shuffleCardsWhenCardDeckIsEmpty();
+            readUserInput();
+            updateState();
+            printState();
+            if(roundOver){
+                gameMethods.shuffleCardsWhenCardDeckIsEmpty();
+                gameMethods.prepareNextRound();
                 printState();
-                if(roundOver){
-                    Run();
-                }
+                setRoundOver(false);
             }
         }
+    }
 
 
     private void initialize() {
@@ -50,8 +61,8 @@ public class App {
             gameMethods.chosenCardValidityCheck(); // her "move" will be checked
             acceptPlayersInput(); // if her "move" is valid, it will be taken out of her hand and placed on to the discard pile.
             gameMethods.sayUno(); // checks if the player has only one card left and has to say "Uno"
-            if(gameMethods.winnerOftheRound()){
-                roundOver = true;// checks if there is a winner of the round
+            if(gameMethods.winnerOftheRound()){ // checks if there is a winner of the round
+                setRoundOver(true);
             }
         }
         else {
