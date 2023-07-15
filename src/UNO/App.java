@@ -39,10 +39,12 @@ public class App {
             updateState();
             printState();
             if(roundOver){
+                gameMethods.countPoints();
                 gameMethods.shuffleCardsWhenCardDeckIsEmpty();
                 gameMethods.prepareNextRound();
                 printState();
                 setRoundOver(false);
+
             }
         }
     }

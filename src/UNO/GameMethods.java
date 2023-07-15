@@ -136,7 +136,7 @@ public class GameMethods {
         setCurrentPlayer(getPlayerByIndex(initialPlayerIndex));
         //   setPreviousPayer(isReverseCard());
         System.out.println(getPlayerByIndex(currentPlayerIndex).getName() + ",you start the game. ");
-        if(currentPlayer instanceof Human) {
+        if (currentPlayer instanceof Human) {
             helpdesk.helpFile();
         }
     }
@@ -244,7 +244,7 @@ public class GameMethods {
                     && !card.getType().equals(Type.GREEN_PASS) && !card.getType().equals(Type.BLUE_PASS)
                     && !card.getType().equals(Type.YELLOW_PASS) && !card.getType().equals(Type.RED_REVERSE)
                     && !card.getType().equals(Type.BLUE_REVERSE) && !card.getType().equals(Type.GREEN_REVERSE)
-                    && !card.getType().equals(Type.YELLOW_REVERSE)) && discard.getNumber() == card.getNumber()){
+                    && !card.getType().equals(Type.YELLOW_REVERSE)) && discard.getNumber() == card.getNumber()) {
                 chosenCardValid = true;
             }
         } else { //if player chose a card that is not valid based on what is on the top of discard deck
@@ -368,8 +368,9 @@ public class GameMethods {
                 if (hasValidCardToPlay()) {
                     System.out.println(currentPlayer);
                     currentPlayer.printCardsInHand();
-                    if(currentPlayer instanceof Human){ //if the currentplayer is human
-                    helpdesk.helpFile();} // he can read the helpfile at the beginning of each move
+                    if (currentPlayer instanceof Human) { //if the currentplayer is human
+                        helpdesk.helpFile();
+                    } // he can read the helpfile at the beginning of each move
                     System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play: ");
                     if (currentPlayer instanceof Bot) {
                         Card cardToPlay = botPlaysCard();
@@ -470,7 +471,7 @@ public class GameMethods {
     }
 
 
-   public void initialPlayerPlaysCard() { //change the method name ....this will be run just once every round
+    public void initialPlayerPlaysCard() { //change the method name ....this will be run just once every round
         Player currentPlayer = getCurrentPlayer();
 
         int currentPlayerIndex = getCurrentPlayerIndex();
@@ -494,7 +495,7 @@ public class GameMethods {
                 firstCard.getType().equals(Type.BLUE_PASS) || firstCard.getType().equals(Type.YELLOW_PASS)) {
             System.out.println(currentPlayer.getName() + ", you have skip  this turn.");
             setPreviousPlayer(getPlayerByIndex(currentPlayerIndex));
-         //   setBlocked(true); TODO : testen: reicht es, das hier auszukommentieren?
+            setBlocked(true);
         } else if (firstCard.equals(Type.RED_PLUS2) || firstCard.equals(Type.YELLOW_PLUS2)
                 || firstCard.equals(Type.GREEN_PLUS2) || firstCard.equals(Type.BLUE_PLUS2)) {
             System.out.println(currentPlayer.getName() + ", you have to draw 2 penalty cards and have to skip this turn.");
@@ -756,7 +757,7 @@ public class GameMethods {
                         && !card.getType().equals(Type.GREEN_PASS) && !card.getType().equals(Type.BLUE_PASS)
                         && !card.getType().equals(Type.YELLOW_PASS) && !card.getType().equals(Type.RED_REVERSE)
                         && !card.getType().equals(Type.BLUE_REVERSE) && !card.getType().equals(Type.GREEN_REVERSE)
-                        && !card.getType().equals(Type.YELLOW_REVERSE)) && discard.getNumber() == card.getNumber()){
+                        && !card.getType().equals(Type.YELLOW_REVERSE)) && discard.getNumber() == card.getNumber()) {
                     isValid = true;
                     break;
                 }
@@ -857,14 +858,38 @@ public class GameMethods {
     }
 
     public boolean winnerOftheRound() { // to check if there is a winner of the round, so the current round is over.
-        boolean noMoreCardsInHand = false;
+        boolean isWinnerofTheRound = false;
         if (currentPlayer.cardsInHand.size() == 0) {
             System.out.println(currentPlayer.getName() + ", you win this round!");
-            noMoreCardsInHand = true;
+            isWinnerofTheRound = true;
         }
-        getCurrentPlayer().setWinnerOftheRound(noMoreCardsInHand);
-        return noMoreCardsInHand;
+        getCurrentPlayer().setWinnerOftheRound(isWinnerofTheRound);
+        return isWinnerofTheRound;
     }
+
+    public void countPoints() {
+        int points = 0;
+        Player winneroftheRound = null;
+        for (Player p : playerList.getPlayerlist()) {
+
+            for (Card c : p.cardsInHand) {
+                if (c.getType().equals(Type.BLUE_PASS) || c.getType().equals(Type.RED_PASS) || c.getType().equals(Type.GREEN_PASS) || c.getType().equals(Type.YELLOW_PASS)
+                        || c.getType().equals(Type.BLUE_REVERSE) || c.getType().equals(Type.RED_REVERSE) || c.getType().equals(Type.YELLOW_REVERSE) || c.getType().equals(Type.GREEN_REVERSE)
+                        || c.getType().equals(Type.BLUE_PLUS2) || c.getType().equals(Type.RED_PLUS2) || c.getType().equals(Type.GREEN_PLUS2) || c.getType().equals(Type.YELLOW_PLUS2)) {
+                    points = points + 20;
+                }if (c.getType().equals(Type.PLUS_4) || c.getType().equals(Type.COLORCHANGE)) {
+                    points = points + 50;
+                }
+            }
+            if (p.isWinnerOftheRound()) {
+                winneroftheRound = p;
+            }
+        }
+        winneroftheRound.setPoints(winneroftheRound.getPoints() + points);
+        System.out.println(winneroftheRound.getName() + ", you receive " + points + " points this round!");
+
+    }
+
 
     public void shuffleCardsWhenCardDeckIsEmpty() { //checks if the CardDeck is empty and puts the discard pile cards back into the CardDeck
         if (cardDeck.getSizeofCardDeck() == 0) {

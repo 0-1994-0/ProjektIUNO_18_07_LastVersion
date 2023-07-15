@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Player {
 
     protected String name;
-    protected int id; // wirklich notwendig?
+    protected int id;
     protected int points;
     protected Card playedCard;
     protected static int counter = 0;
@@ -26,7 +26,7 @@ public class Player {
     public Player(String name) {
         this.name = name;
         this.id = ++counter;
-        this.points = 0;
+        this.points = points;
         this.cardsInHand = new ArrayList<>();
 
     }

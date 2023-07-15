@@ -60,11 +60,7 @@ public class PlayerList {
         String name = scanner.next();
         return name;
     }
-// random zahl zw 0 und 4
 
-    public void showId (){
-        for(Player player : playerlist){
-            System.out.println(player.name + player.id);
-        }
-    }
+
+
 }
