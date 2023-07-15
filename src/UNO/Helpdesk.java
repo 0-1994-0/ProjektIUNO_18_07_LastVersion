@@ -111,7 +111,7 @@ public class Helpdesk {
             //Die Enter-Taste wird als falsche Eingabe erkannt...
 
        File file = new File("help.txt");
-            System.out.println("For help tip 'h', for no Help tip 'enter'");
+            System.out.println("For help tip 'h', for no help tip 'Enter'");
             Scanner scanner = new Scanner(System.in);
 
             try {
