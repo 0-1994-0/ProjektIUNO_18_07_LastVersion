@@ -9,6 +9,11 @@ public class Bot extends Player {
         super(name);
     }
 
+    @Override
+    public boolean isHuman() {
+        return false;
+    }
+
     public static Card botPlaysCard() {
         Player currentPlayer = getCurrentPlayer();
         Card discard = getDiscardPile().showLastCard();

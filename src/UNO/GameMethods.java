@@ -136,7 +136,9 @@ public class GameMethods {
         setCurrentPlayer(getPlayerByIndex(initialPlayerIndex));
         //   setPreviousPayer(isReverseCard());
         System.out.println(getPlayerByIndex(currentPlayerIndex).getName() + ",you start the game. ");
-        helpdesk.helpFile();
+        if(currentPlayer.isHuman()) {
+            helpdesk.helpFile();
+        }
     }
 
     public void putFirstCardOnTable() {
@@ -366,7 +368,8 @@ public class GameMethods {
                 if (hasValidCardToPlay()) {
                     System.out.println(currentPlayer);
                     currentPlayer.printCardsInHand();
-                    helpdesk.helpFile();
+                    if(currentPlayer.isHuman()){ //if the currentplayer is human
+                    helpdesk.helpFile();} // he can read the helpfile at the beginning of each move
                     System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play: ");
                     if (currentPlayer instanceof Bot) {
                         Card cardToPlay = botPlaysCard();
