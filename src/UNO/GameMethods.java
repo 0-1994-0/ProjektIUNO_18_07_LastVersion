@@ -136,7 +136,7 @@ public class GameMethods {
         setCurrentPlayer(getPlayerByIndex(initialPlayerIndex));
         //   setPreviousPayer(isReverseCard());
         System.out.println(getPlayerByIndex(currentPlayerIndex).getName() + ",you start the game. ");
-        if(currentPlayer.isHuman()) {
+        if(currentPlayer instanceof Human) {
             helpdesk.helpFile();
         }
     }
@@ -368,7 +368,7 @@ public class GameMethods {
                 if (hasValidCardToPlay()) {
                     System.out.println(currentPlayer);
                     currentPlayer.printCardsInHand();
-                    if(currentPlayer.isHuman()){ //if the currentplayer is human
+                    if(currentPlayer instanceof Human){ //if the currentplayer is human
                     helpdesk.helpFile();} // he can read the helpfile at the beginning of each move
                     System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play: ");
                     if (currentPlayer instanceof Bot) {
@@ -470,7 +470,7 @@ public class GameMethods {
     }
 
 
-    public void initialPlayerPlaysCard() { //change the method name ....this will be run just once every round
+   public void initialPlayerPlaysCard() { //change the method name ....this will be run just once every round
         Player currentPlayer = getCurrentPlayer();
 
         int currentPlayerIndex = getCurrentPlayerIndex();
@@ -494,7 +494,7 @@ public class GameMethods {
                 firstCard.getType().equals(Type.BLUE_PASS) || firstCard.getType().equals(Type.YELLOW_PASS)) {
             System.out.println(currentPlayer.getName() + ", you have skip  this turn.");
             setPreviousPlayer(getPlayerByIndex(currentPlayerIndex));
-            setBlocked(true);
+         //   setBlocked(true); TODO : testen: reicht es, das hier auszukommentieren?
         } else if (firstCard.equals(Type.RED_PLUS2) || firstCard.equals(Type.YELLOW_PLUS2)
                 || firstCard.equals(Type.GREEN_PLUS2) || firstCard.equals(Type.BLUE_PLUS2)) {
             System.out.println(currentPlayer.getName() + ", you have to draw 2 penalty cards and have to skip this turn.");
@@ -544,6 +544,7 @@ public class GameMethods {
             }
         }
     }
+
 
     public void printTopCardOfDiscardPile() { // just used another color so it is easier to find it on the console
         Card card = discardPile.showLastCard();

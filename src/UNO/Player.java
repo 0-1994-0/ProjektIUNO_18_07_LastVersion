@@ -15,16 +15,6 @@ public class Player {
 
     protected boolean winnerOftheRound;
 
-    protected boolean isHuman = true;
-
-    public boolean isHuman() {
-        return isHuman;
-    }
-
-    public void setHuman(boolean human) {
-        isHuman = human;
-    }
-
     public void setPlayedCard(Card playedCard) {
         this.playedCard = playedCard;
     }

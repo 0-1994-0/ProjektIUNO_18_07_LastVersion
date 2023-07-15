@@ -43,7 +43,7 @@ public class DiscardPile {
         return discardPile;
     }
 
-    //erste Karte wird aufgedeckt
+
 
 
 }
