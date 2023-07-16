@@ -130,13 +130,12 @@ public class GameMethods {
 
     // wird nur am Anfang des Spiels festgelegt
     public void firstPlayer() {
-        System.out.println("Setting each player's turn...:");
+        System.out.println("Setting the first player...");
         Random rand = new Random();
         int initialPlayerIndex = rand.nextInt(3);
         setCurrentPlayerIndex(initialPlayerIndex);
         setCurrentPlayer(getPlayerByIndex(initialPlayerIndex));
-        //   setPreviousPayer(isReverseCard());
-        System.out.println(getPlayerByIndex(currentPlayerIndex).getName() + ",you start the game. ");
+        System.out.println(getPlayerByIndex(currentPlayerIndex).getName() + ", you start the game. ");
         if (currentPlayer instanceof Human) {
             helpdesk.helpFile();
         }
@@ -494,6 +493,7 @@ public class GameMethods {
             cardDeck.shuffleCards();
             putFirstCardOnTable();
             firstCard = discardPile.showLastCard();
+            printTopCardOfDiscardPile();
             validFirstCard = isValidFirstCard(firstCard);
         }
 
