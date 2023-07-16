@@ -16,6 +16,7 @@ public class GameMethods {
     private static Player currentPlayer;
 
     protected static Player previousPlayer;
+    boolean playerHasAlreadyBeenBlocked = false;
     boolean isClockwise = true;
     static int currentPlayerIndex;
 
@@ -159,7 +160,7 @@ public class GameMethods {
                     String color = (colors[random.nextInt(colors.length)]);
                     System.out.println(color);
                     setColor(color);
-                } else { // color will be entered if player in human
+                } else { // color will be entered if player is human
                     Scanner input = new Scanner(System.in);
                     String color = input.nextLine().toUpperCase();
                     setColor(color);
@@ -363,7 +364,7 @@ public class GameMethods {
         if (discardPile.getDiscardPile().size() == 1) {
             initialPlayerPlaysCard();
         } else {
-            checkIfCurrentPlayerMustBePenalized(); //before a player makes a move, it will be check if the player must receive a penalty.
+            checkIfCurrentPlayerMustBePenalized(); //before a player makes a move, it will be checked if the player must receive a penalty.
             if (!isBlocked()) {
                 if (hasValidCardToPlay()) {
                     System.out.println(currentPlayer);
@@ -460,6 +461,7 @@ public class GameMethods {
             } else if (topCard.getType().equals(Type.YELLOW_PASS) || topCard.getType().equals(Type.BLUE_PASS)
                     || topCard.getType().equals(Type.RED_PASS) || topCard.getType().equals(Type.GREEN_PASS)) {
                 currentPlayerIndex = isPassCard();
+                playerHasAlreadyBeenBlocked = true;
             } else {
                 currentPlayerIndex = isRegularCard();
             }
@@ -473,7 +475,7 @@ public class GameMethods {
 
     public void initialPlayerPlaysCard() { //change the method name ....this will be run just once every round
         Player currentPlayer = getCurrentPlayer();
-
+        boolean validFirstCard = true;
         int currentPlayerIndex = getCurrentPlayerIndex();
         int totalPlayers = playerList.getPlayerlist().size();
         // Calculate the previous player index using modulo to wrap around to the last index when currentPlayerIndex is 0.
@@ -485,14 +487,18 @@ public class GameMethods {
         Card cardToPlay = null;
         Card firstCard = discardPile.showLastCard();
 
-        while (firstCard.getType().equals((Type.PLUS_4))) {
+        validFirstCard = isValidFirstCard(firstCard);
+        while (!validFirstCard) {
             cardDeck.add(firstCard);
+            discardPile.getDiscardPile().clear();
             cardDeck.shuffleCards();
             putFirstCardOnTable();
+            firstCard = discardPile.showLastCard();
+            validFirstCard = isValidFirstCard(firstCard);
         }
 
-        if (firstCard.getType().equals(Type.RED_PASS) || firstCard.getType().equals(Type.GREEN_PASS) ||
-                firstCard.getType().equals(Type.BLUE_PASS) || firstCard.getType().equals(Type.YELLOW_PASS)) {
+        if (!playerHasAlreadyBeenBlocked && (firstCard.getType().equals(Type.RED_PASS) || firstCard.getType().equals(Type.GREEN_PASS) ||
+                firstCard.getType().equals(Type.BLUE_PASS) || firstCard.getType().equals(Type.YELLOW_PASS))) {
             System.out.println(currentPlayer.getName() + ", you have skip  this turn.");
             setPreviousPlayer(getPlayerByIndex(currentPlayerIndex));
             setBlocked(true);
@@ -503,12 +509,14 @@ public class GameMethods {
             setPreviousPlayer(getPlayerByIndex(currentPlayerIndex));
             setBlocked(true);
         } else if (firstCard.getType().equals(Type.COLORCHANGE)) { // current player will set the color but the player on the left (nextPlayer) will resume the game
+
             System.out.println(currentPlayer.getName() + ", choose a color:");
             String color = input.nextLine().toUpperCase();
             setColor(color);
             currentPlayer.setPlayedCard(firstCard); // player didn't play any card. just set/added the newColor for the COLORCHANGE card
             setPreviousPlayer(getPlayerByIndex(currentPlayerIndex));
             setBlocked(true);
+
         } else {
             if (hasValidCardToPlay() && !isBlocked()) {
                 currentPlayer.printCardsInHand();
@@ -544,8 +552,16 @@ public class GameMethods {
                 }
             }
         }
+
+        playerHasAlreadyBeenBlocked = false;
     }
 
+    private static boolean isValidFirstCard(Card firstCard) {
+        if (firstCard.getType().equals(Type.PLUS_4)) {
+            return false;
+        }
+        return true;
+    }
 
     public void printTopCardOfDiscardPile() { // just used another color so it is easier to find it on the console
         Card card = discardPile.showLastCard();
@@ -877,7 +893,8 @@ public class GameMethods {
                         || c.getType().equals(Type.BLUE_REVERSE) || c.getType().equals(Type.RED_REVERSE) || c.getType().equals(Type.YELLOW_REVERSE) || c.getType().equals(Type.GREEN_REVERSE)
                         || c.getType().equals(Type.BLUE_PLUS2) || c.getType().equals(Type.RED_PLUS2) || c.getType().equals(Type.GREEN_PLUS2) || c.getType().equals(Type.YELLOW_PLUS2)) {
                     points = points + 20;
-                }if (c.getType().equals(Type.PLUS_4) || c.getType().equals(Type.COLORCHANGE)) {
+                }
+                if (c.getType().equals(Type.PLUS_4) || c.getType().equals(Type.COLORCHANGE)) {
                     points = points + 50;
                 }
             }
@@ -886,7 +903,18 @@ public class GameMethods {
             }
         }
         winneroftheRound.setPoints(winneroftheRound.getPoints() + points);
-        System.out.println(winneroftheRound.getName() + ", you receive " + points + " points this round!");
+        System.out.println(winneroftheRound.getName() + ", you receive " + points + " points this round! Total points: " + winneroftheRound.getPoints());
+
+    }
+
+    public void GameWinner() {
+
+        for (Player p : playerList.getPlayerlist()) {
+            if (p.getPoints() >= 500) {
+                System.out.println("The Game is over and " + p.getName() + " is the winner of the Game! Congrats!");
+                System.exit(0);
+            }
+        }
 
     }
 

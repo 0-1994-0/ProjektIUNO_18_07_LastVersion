@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import static UNO.GameMethods.*;
 
 public class Bot extends Player {
+
     public Bot(String name) {
         super(name);
     }
@@ -15,6 +16,7 @@ public class Bot extends Player {
         Card discard = getDiscardPile().showLastCard();
         Card cardToPlay = null;
         try {
+
             if (!isBlocked()) {
                 if (hasValidCardToPlay()) {
                     for (Card card : currentPlayer.cardsInHand) { //the bot's hand will be searched for possible card to play

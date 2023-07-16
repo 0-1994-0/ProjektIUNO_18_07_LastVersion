@@ -22,7 +22,7 @@ public class App {
 
     GameMethods gameMethods = new GameMethods();
 
-    public App(Scanner input, PrintStream output){
+    public App(Scanner input, PrintStream output) {
         this.input = input;
         this.output = output;
     }
@@ -33,18 +33,18 @@ public class App {
         initialize();
         printState();
 
-        while(!exit) {
+        while (!exit) {
             gameMethods.shuffleCardsWhenCardDeckIsEmpty();
             readUserInput();
             updateState();
             printState();
-            if(roundOver){
+            if (roundOver) {
                 gameMethods.countPoints();
+                gameMethods.GameWinner();
                 gameMethods.shuffleCardsWhenCardDeckIsEmpty();
                 gameMethods.prepareNextRound();
                 printState();
                 setRoundOver(false);
-
             }
         }
     }
@@ -59,15 +59,14 @@ public class App {
     }
 
     private void updateState() {
-        if(getCurrentPlayer().getPlayedCard() != null) { // if the current player made a "move"
+        if (getCurrentPlayer().getPlayedCard() != null) { // if the current player made a "move"
             gameMethods.chosenCardValidityCheck(); // her "move" will be checked
             acceptPlayersInput(); // if her "move" is valid, it will be taken out of her hand and placed on to the discard pile.
             gameMethods.sayUno(); // checks if the player has only one card left and has to say "Uno"
-            if(gameMethods.winnerOftheRound()){ // checks if there is a winner of the round
+            if (gameMethods.winnerOftheRound()) { // checks if there is a winner of the round
                 setRoundOver(true);
             }
-        }
-        else {
+        } else {
             setBlocked(false); //in case the currentPlayer could not make a move, block is set to default so next player can play.
         }
 
