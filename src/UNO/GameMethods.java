@@ -390,8 +390,10 @@ public class GameMethods {
                     currentPlayer.cardsInHand.add(cardDeck.dealCard());
                     currentPlayer.printCardsInHand();
                     if (hasValidCardToPlay()) {
-                        // remove card from hand, add to card to discard pile = play this card
-                        System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play");
+                        if (currentPlayer instanceof Human) { //if the currentplayer is human
+                            helpdesk.helpFile();
+                        } // he can read the helpfile at the beginning of each move
+                        System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play.");
                         if (currentPlayer instanceof Bot) {
                             Card cardToPlay = botPlaysCard();
                             currentPlayer.setPlayedCard(cardToPlay);
