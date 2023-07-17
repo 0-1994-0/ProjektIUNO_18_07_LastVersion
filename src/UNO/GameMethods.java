@@ -363,7 +363,7 @@ public class GameMethods {
         if (!discardPileCardIsOfLastTurn && discardPile.getDiscardPile().size() == 1) {
             initialPlayerPlaysCard();
         } else {
-            if (!discardPileCardIsOfLastTurn) {
+            if (!discardPileCardIsOfLastTurn) { //to check whether the card on top of the dcpile is from the last turn (for example pass card)
                 checkIfCurrentPlayerMustBePenalized(); //before a player makes a move, it will be checked if the player must receive a penalty.
             }
             if (!isBlocked()) {
@@ -378,8 +378,7 @@ public class GameMethods {
                         Card cardToPlay = botPlaysCard();
                         currentPlayer.setPlayedCard(cardToPlay);
                     } else {
-                        int intCardID = input.nextInt();
-                        Card cardToPlay = currentPlayer.getCardByID(intCardID);
+                        Card cardToPlay = currentPlayer.getCardByID(HumanPlayerPlaysCard());
                         currentPlayer.setPlayedCard(cardToPlay);
                     }
                     colorChangeCard();
@@ -390,16 +389,15 @@ public class GameMethods {
                     currentPlayer.cardsInHand.add(cardDeck.dealCard());
                     currentPlayer.printCardsInHand();
                     if (hasValidCardToPlay()) {
-                        if (currentPlayer instanceof Human) { //if the currentplayer is human
+                        if (currentPlayer instanceof Human) { //if the currentplayer is human,he can read the helpfile at the beginning of each move
                             helpdesk.helpFile();
-                        } // he can read the helpfile at the beginning of each move
+                        }
                         System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play.");
                         if (currentPlayer instanceof Bot) {
                             Card cardToPlay = botPlaysCard();
                             currentPlayer.setPlayedCard(cardToPlay);
                         } else {
-                            int intCardID = input.nextInt();
-                            Card cardToPlay = currentPlayer.getCardByID(intCardID);
+                            Card cardToPlay = currentPlayer.getCardByID(HumanPlayerPlaysCard());
                             currentPlayer.setPlayedCard(cardToPlay);
                         }
                         colorChangeCard();
@@ -409,6 +407,22 @@ public class GameMethods {
                 }
             }
         }
+    }
+
+    public int HumanPlayerPlaysCard() {
+        Scanner input = new Scanner(System.in);
+        int intCardID = -1;  // Initialize to a value that is not a valid card ID
+        boolean validInput = false;
+        while (!validInput) {
+            if (input.hasNextInt()) {
+                intCardID = input.nextInt();
+                validInput = true;
+            } else {
+                System.out.println("Invalid input. Please enter an integer value for the card ID.");
+                input.next(); // Discard the invalid input
+            }
+        }
+        return intCardID;
     }
 
     /*
@@ -540,8 +554,7 @@ public class GameMethods {
                     cardToPlay = botPlaysCard();
                     currentPlayer.setPlayedCard(cardToPlay);
                 } else {
-                    int intCardID = input.nextInt();
-                    cardToPlay = currentPlayer.getCardByID(intCardID);
+                    cardToPlay = currentPlayer.getCardByID(HumanPlayerPlaysCard());
                     currentPlayer.setPlayedCard(cardToPlay);
                 }
                 colorChangeCard(); //to handle COLORCHANGE cards in case player used it
