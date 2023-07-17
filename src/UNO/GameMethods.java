@@ -16,7 +16,7 @@ public class GameMethods {
     private static Player currentPlayer;
 
     protected static Player previousPlayer;
-    boolean playerHasAlreadyBeenBlocked = false;
+    boolean discardPileCardIsOfLastTurn = false;
     boolean isClockwise = true;
     static int currentPlayerIndex;
 
@@ -360,10 +360,12 @@ public class GameMethods {
         Player currentPlayer = getCurrentPlayer();
         Scanner input = new Scanner(System.in);
 
-        if (discardPile.getDiscardPile().size() == 1) {
+        if (!discardPileCardIsOfLastTurn && discardPile.getDiscardPile().size() == 1) {
             initialPlayerPlaysCard();
         } else {
-            checkIfCurrentPlayerMustBePenalized(); //before a player makes a move, it will be checked if the player must receive a penalty.
+            if(!discardPileCardIsOfLastTurn) {
+                checkIfCurrentPlayerMustBePenalized(); //before a player makes a move, it will be checked if the player must receive a penalty.
+            }
             if (!isBlocked()) {
                 if (hasValidCardToPlay()) {
                     System.out.println(currentPlayer);
@@ -381,6 +383,7 @@ public class GameMethods {
                         currentPlayer.setPlayedCard(cardToPlay);
                     }
                     colorChangeCard();
+                    discardPileCardIsOfLastTurn = false;
                 } else {
                     System.out.println("Sorry, " + currentPlayer.getName() + ", you don't have a valid card to play. Please draw a card.");
                     //current player nimmt eine Karte vom Deck und fügt sie seinen Karten hinzu
@@ -457,10 +460,9 @@ public class GameMethods {
             if (topCard.getType().equals(Type.YELLOW_REVERSE) || topCard.getType().equals(Type.BLUE_REVERSE)
                     || topCard.getType().equals(Type.RED_REVERSE) || topCard.getType().equals(Type.GREEN_REVERSE)) {
                 currentPlayerIndex = isReverseCard();
-            } else if (topCard.getType().equals(Type.YELLOW_PASS) || topCard.getType().equals(Type.BLUE_PASS)
-                    || topCard.getType().equals(Type.RED_PASS) || topCard.getType().equals(Type.GREEN_PASS)) {
+            } else if (!discardPileCardIsOfLastTurn && (topCard.getType().equals(Type.YELLOW_PASS) || topCard.getType().equals(Type.BLUE_PASS)
+                    || topCard.getType().equals(Type.RED_PASS) || topCard.getType().equals(Type.GREEN_PASS))) {
                 currentPlayerIndex = isPassCard();
-                playerHasAlreadyBeenBlocked = true;
             } else {
                 currentPlayerIndex = isRegularCard();
             }
@@ -497,25 +499,36 @@ public class GameMethods {
             validFirstCard = isValidFirstCard(firstCard);
         }
 
-        if (!playerHasAlreadyBeenBlocked && (firstCard.getType().equals(Type.RED_PASS) || firstCard.getType().equals(Type.GREEN_PASS) ||
-                firstCard.getType().equals(Type.BLUE_PASS) || firstCard.getType().equals(Type.YELLOW_PASS))) {
+        if (firstCard.getType().equals(Type.RED_PASS) || firstCard.getType().equals(Type.GREEN_PASS) ||
+                firstCard.getType().equals(Type.BLUE_PASS) || firstCard.getType().equals(Type.YELLOW_PASS)) {
             System.out.println(currentPlayer.getName() + ", you have skip  this turn.");
             setPreviousPlayer(getPlayerByIndex(currentPlayerIndex));
             setBlocked(true);
-        } else if (firstCard.equals(Type.RED_PLUS2) || firstCard.equals(Type.YELLOW_PLUS2)
-                || firstCard.equals(Type.GREEN_PLUS2) || firstCard.equals(Type.BLUE_PLUS2)) {
+            discardPileCardIsOfLastTurn = true;
+        } else if (firstCard.getType().equals(Type.RED_PLUS2) || firstCard.getType().equals(Type.YELLOW_PLUS2)
+                || firstCard.getType().equals(Type.GREEN_PLUS2) || firstCard.getType().equals(Type.BLUE_PLUS2)) {
             System.out.println(currentPlayer.getName() + ", you have to draw 2 penalty cards and have to skip this turn.");
             plus2Card();
             setPreviousPlayer(getPlayerByIndex(currentPlayerIndex));
             setBlocked(true);
+            discardPileCardIsOfLastTurn = true;
         } else if (firstCard.getType().equals(Type.COLORCHANGE)) { // current player will set the color but the player on the left (nextPlayer) will resume the game
 
             System.out.println(currentPlayer.getName() + ", choose a color:");
-            String color = input.nextLine().toUpperCase();
+
+            String color;
+            if (currentPlayer instanceof Bot) { //random color will be generated if player is Bot
+                Random random = new Random();
+                String[] colors = {"RED", "YELLOW", "BLUE", "GREEN"}; //String array of colors we can use to generate a random color
+                color = (colors[random.nextInt(colors.length)]);
+            } else { // color will be entered if player is human
+                input = new Scanner(System.in);
+                color = input.nextLine().toUpperCase();
+            }
+
             setColor(color);
             currentPlayer.setPlayedCard(firstCard); // player didn't play any card. just set/added the newColor for the COLORCHANGE card
             setPreviousPlayer(getPlayerByIndex(currentPlayerIndex));
-            setBlocked(true);
 
         } else {
             if (hasValidCardToPlay() && !isBlocked()) {
@@ -553,7 +566,6 @@ public class GameMethods {
             }
         }
 
-        playerHasAlreadyBeenBlocked = false;
     }
 
     private static boolean isValidFirstCard(Card firstCard) {
