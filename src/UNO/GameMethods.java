@@ -411,15 +411,15 @@ public class GameMethods {
 
     public int HumanPlayerPlaysCard() {
         Scanner input = new Scanner(System.in);
-        int intCardID = -1;  // Initialize to a value that is not a valid card ID
+        int intCardID = -1;  // Initialize a value that is not a valid card ID
         boolean validInput = false;
-        while (!validInput) {
+        while (!validInput) { //as long as the input is not an int, the player will be asked to put in an integer value
             if (input.hasNextInt()) {
                 intCardID = input.nextInt();
                 validInput = true;
             } else {
                 System.out.println("Invalid input. Please enter an integer value for the card ID.");
-                input.next(); // Discard the invalid input
+                input.next();
             }
         }
         return intCardID;
