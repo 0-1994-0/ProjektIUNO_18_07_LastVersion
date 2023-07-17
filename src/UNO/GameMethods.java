@@ -363,7 +363,7 @@ public class GameMethods {
         if (!discardPileCardIsOfLastTurn && discardPile.getDiscardPile().size() == 1) {
             initialPlayerPlaysCard();
         } else {
-            if(!discardPileCardIsOfLastTurn) {
+            if (!discardPileCardIsOfLastTurn) {
                 checkIfCurrentPlayerMustBePenalized(); //before a player makes a move, it will be checked if the player must receive a penalty.
             }
             if (!isBlocked()) {
@@ -373,7 +373,7 @@ public class GameMethods {
                     if (currentPlayer instanceof Human) { //if the currentplayer is human
                         helpdesk.helpFile();
                     } // he can read the helpfile at the beginning of each move
-                    System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play: ");
+                    System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play.");
                     if (currentPlayer instanceof Bot) {
                         Card cardToPlay = botPlaysCard();
                         currentPlayer.setPlayedCard(cardToPlay);
@@ -918,6 +918,25 @@ public class GameMethods {
         System.out.println(winneroftheRound.getName() + ", you receive " + points + " points this round! Total points: " + winneroftheRound.getPoints());
 
     }
+
+    public boolean PlayerWantsToExitTheGame() {
+        boolean exit = false;
+        if (currentPlayer instanceof Human) {
+            Scanner scanner = new Scanner(System.in);
+            String input;
+            do {
+                System.out.println("Press 'Enter' to continue or 'X' to exit the game.");
+                input = scanner.nextLine();
+                if (input.equalsIgnoreCase("X")) {
+                    exit = true;
+                } else {
+                    exit = false;
+                }
+            } while (!input.equalsIgnoreCase("X") && !input.isEmpty());
+        }
+        return exit;
+    }
+
 
     public void GameWinner() {
 
