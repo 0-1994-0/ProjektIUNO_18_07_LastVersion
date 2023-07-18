@@ -89,26 +89,26 @@ public class GameMethods {
 
     Helpdesk helpdesk = new Helpdesk();
 
-    public void prepareGame() {
+    public void prepareGame() {  // creates the cards, shuffles them, puts the first card on the table
         cardDeck.createCards(Type.YELLOW);
         cardDeck.createCards(Type.RED);
         cardDeck.createCards(Type.BLUE);
         cardDeck.createCards(Type.GREEN);
         cardDeck.createActionCards();
         cardDeck.shuffleCards();
-        setPlayersForTheRound();
+        setPlayersForTheRound(); // player can choose numbers of human players and bots
         System.out.println();
-        cardDeck.distributeCards(playerList, cardDeck);
+        cardDeck.distributeCards(playerList, cardDeck); //each player receives 7 cards
         setBlocked(false);
         System.out.println();
-        firstPlayer();
+        firstPlayer(); //defines, which player will start the game
         System.out.println();
         putFirstCardOnTable();
 
     }
 
     public void prepareNextRound() {
-        putAllCardsBackIntoCardDeck();
+        putAllCardsBackIntoCardDeck(); //before a next round is played, all played cards and the cards in hand are put back into the cardDeck
         cardDeck.shuffleCards();
         cardDeck.distributeCards(playerList, cardDeck);
         setBlocked(false);
@@ -119,21 +119,20 @@ public class GameMethods {
     }
 
     public void putAllCardsBackIntoCardDeck() {
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 4; i++) { //each player puts his cards back into the cardDeck
             Player player = playerList.getPlayerByID(i);
             cardDeck.cardDeck.addAll(player.cardsInHand);
             player.cardsInHand.removeAll(player.cardsInHand);
         }
-        cardDeck.cardDeck.addAll(discardPile.getDiscardPile());
+        cardDeck.cardDeck.addAll(discardPile.getDiscardPile()); // the cards on the discardpile are also put back into the carddeck
         DiscardPile.discardPile.removeAll(discardPile.getDiscardPile());
     }
 
-    // wird nur am Anfang des Spiels festgelegt
     public void firstPlayer() {
         System.out.println("Setting the first player...");
         Random rand = new Random();
-        int initialPlayerIndex = rand.nextInt(3);
-        setCurrentPlayerIndex(initialPlayerIndex);
+        int initialPlayerIndex = rand.nextInt(3); //chooses a random int between 1 and 4
+        setCurrentPlayerIndex(initialPlayerIndex); //the first player is setted as the currentplayer
         setCurrentPlayer(getPlayerByIndex(initialPlayerIndex));
         System.out.println(getPlayerByIndex(currentPlayerIndex).getName() + ", you start the game. ");
         if (currentPlayer instanceof Human) {
@@ -176,7 +175,7 @@ public class GameMethods {
 
     public void checkIfCurrentPlayerMustBePenalized() {
         Player currentPlayer = getCurrentPlayer();
-        Card card = discardPile.showLastCard();
+        Card card = discardPile.showLastCard(); //we look at the last card that has been played and check if the currentplayer must be penalized
 
         if (card.getType().equals(Type.PLUS_4) && !isPenaltyGiven()) {
             System.out.println(getCurrentPlayer().getName() + ", you get 4 penalty cards and you are blocked from playing this turn.");
@@ -219,21 +218,20 @@ public class GameMethods {
     }
 
 
-    //Methode, um zu überprüfen, ob die gespielte Karte überhaupt gespielt werden darf:
-    public boolean chosenCardValidityCheck() { //card validation
+    public boolean chosenCardValidityCheck() { // checks if the chosen card is valid to be played
         Player currentPlayer = getCurrentPlayer();
         boolean chosenCardValid = false;
-        Card card = currentPlayer.getPlayedCard();
+        Card card = currentPlayer.getPlayedCard(); //we compare the played card to the last card on the discardpile
         Card discard = discardPile.showLastCard();
 
         if (discard.getType().equals(card.getType()) || card.getType().equals(Type.PLUS_4)
-                || card.getType().equals(Type.COLORCHANGE) || card.getType().name().charAt(0) == discard.getType().name().charAt(0)
+                || card.getType().equals(Type.COLORCHANGE) || card.getType().name().charAt(0) == discard.getType().name().charAt(0) //charAt0 is to make sure, that when f.ex. a card with type yellow is put on a card of the type yellow_reverse, the method will see it as a valid move
                 || (discard.getType().name().endsWith("PASS") && card.getType().name().endsWith("PASS"))
                 || (discard.getType().name().endsWith("2") && card.getType().name().endsWith("2"))
                 || (discard.getType().name().endsWith("REVERSE") && card.getType().name().endsWith("REVERSE"))) {
             chosenCardValid = true;
         } else if (discard.getType().equals(Type.COLORCHANGE) || discard.getType().equals(Type.PLUS_4)) {
-            if (card.getType().name().charAt(0) == getColor().charAt(0)) {
+            if (card.getType().name().charAt(0) == getColor().charAt(0)) { //checks if the played card is of the chosen color of the previously played colorchange/plus4 card
                 chosenCardValid = true;
             }
         } else if (discard.getType().equals(Type.GREEN) || discard.getType().equals(Type.YELLOW)
@@ -247,17 +245,16 @@ public class GameMethods {
                     && !card.getType().equals(Type.YELLOW_REVERSE)) && discard.getNumber() == card.getNumber()) {
                 chosenCardValid = true;
             }
-        } else { //if player chose a card that is not valid based on what is on the top of discard deck
+        } else { //if player chose a card that is not valid based on what is on the top of discard deck he is penalized
             chosenCardValid = false;
             System.out.println("Sorry, this is not a valid move. Now you have to draw a penalty card!");
-            currentPlayer.cardsInHand.add(cardDeck.dealCard());
+            currentPlayer.cardsInHand.add(cardDeck.dealCard()); //player draws penalty card
         }
         setChosenCardValid(chosenCardValid);
         return chosenCardValid;
     }
 
 
-    //Methode, die überprüft, ob eine Reversekarte oben auf dem DiscardPile liegt
     public int isReverseCard() { //This method is to decide who has the next turn when the card "<->" is played
         int indexOfTheCurrentPlayer = getCurrentPlayerIndex(); //index of the current player
 
@@ -290,7 +287,7 @@ public class GameMethods {
     }
 
 
-    public int isPassCard() { //This method is to decide who has the next turn when the passcard  is played
+    public int isPassCard() { //This method is to decide who has the next turn when the passcard is played
         //boolean nicht besser?
         int indexOfTheCurrentPlayer = getCurrentPlayerIndex(); //index of the current player
 
@@ -360,7 +357,7 @@ public class GameMethods {
         Player currentPlayer = getCurrentPlayer();
         Scanner input = new Scanner(System.in);
 
-        if (!discardPileCardIsOfLastTurn && discardPile.getDiscardPile().size() == 1) {
+        if (!discardPileCardIsOfLastTurn && discardPile.getDiscardPile().size() == 1) { //checks if this is a new round
             initialPlayerPlaysCard();
         } else {
             if (!discardPileCardIsOfLastTurn) { //to check whether the card on top of the dcpile is from the last turn (for example pass card)
@@ -370,9 +367,9 @@ public class GameMethods {
                 if (hasValidCardToPlay()) {
                     System.out.println(currentPlayer);
                     currentPlayer.printCardsInHand();
-                    if (currentPlayer instanceof Human) { //if the currentplayer is human
+                    if (currentPlayer instanceof Human) { //if the currentplayer is human  he can read the helpfile at the beginning of each move
                         helpdesk.helpFile();
-                    } // he can read the helpfile at the beginning of each move
+                    }
                     System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play.");
                     if (currentPlayer instanceof Bot) {
                         Card cardToPlay = botPlaysCard();
@@ -385,8 +382,7 @@ public class GameMethods {
                     discardPileCardIsOfLastTurn = false;
                 } else {
                     System.out.println("Sorry, " + currentPlayer.getName() + ", you don't have a valid card to play. Please draw a card.");
-                    //current player nimmt eine Karte vom Deck und fügt sie seinen Karten hinzu
-                    currentPlayer.cardsInHand.add(cardDeck.dealCard());
+                    currentPlayer.cardsInHand.add(cardDeck.dealCard()); //cP draws a card
                     currentPlayer.printCardsInHand();
                     if (hasValidCardToPlay()) {
                         if (currentPlayer instanceof Human) { //if the currentplayer is human,he can read the helpfile at the beginning of each move
@@ -425,51 +421,14 @@ public class GameMethods {
         return intCardID;
     }
 
-    /*
-        public void playerPlaysCard() {
-            Player currentPlayer = getCurrentPlayer();
-            Scanner input = new Scanner(System.in);
 
-            if (discardPile.getDiscardPile().size() == 1) {
-                initialPlayerPlaysCard();
-            } else {
-                checkIfCurrentPlayerMustBePenalized(); //before a player makes a move, it will be check if the player must receive a penalty.
-                if (!isBlocked()) {
-                    if (hasValidCardToPlay()) {
-                        System.out.println(currentPlayer);
-                        currentPlayer.printCardsInHand();
-                        System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play: ");
-                        int intCardID = input.nextInt();
-                        Card cardToPlay = currentPlayer.getCardByID(intCardID);
-                        currentPlayer.setPlayedCard(cardToPlay);
-                        colorChangeCard();
-                    } else {
-                        System.out.println("Sorry, " + currentPlayer.getName() + ", you don't have a valid card to play. Please draw a card.");
-                        //current player nimmt eine Karte vom Deck und fügt sie seinen Karten hinzu
-                        currentPlayer.cardsInHand.add(cardDeck.dealCard());
-                        currentPlayer.printCardsInHand();
-                        if (hasValidCardToPlay()) {
-                            // remove card from hand, add to card to discard pile = play this card
-                            System.out.println(currentPlayer.getName() + " , your move! Type in the ID of the card you would like to play");
-                            int intCardID = input.nextInt();
-                            Card cardToPlay = currentPlayer.getCardByID(intCardID);
-                            currentPlayer.setPlayedCard(cardToPlay);
-                            colorChangeCard();
-                        } else {
-                            System.out.println("Sorry, " + currentPlayer.getName() + " you STILL don't have a card to play out this turn.");
-                        }
-                    }
-                }
-            }
-        }
-    */
-    public static Player getPlayerByIndex(int playerIndex) {
+    public static Player getPlayerByIndex(int playerIndex) {  //returns player by indexnumber
         Player result;
         result = playerList.getPlayerlist().get(playerIndex);
         return result;
     }
 
-    public void nextTurn() {
+    public void nextTurn() { // sets the currentplayerindex according to which type of card has been played
         Card topCard = discardPile.showLastCard();
 
         try {
@@ -490,7 +449,7 @@ public class GameMethods {
     }
 
 
-    public void initialPlayerPlaysCard() { //change the method name ....this will be run just once every round
+    public void initialPlayerPlaysCard() { //this will be run just once every round
         Player currentPlayer = getCurrentPlayer();
         boolean validFirstCard = true;
         int currentPlayerIndex = getCurrentPlayerIndex();
@@ -505,7 +464,7 @@ public class GameMethods {
         Card firstCard = discardPile.showLastCard();
 
         validFirstCard = isValidFirstCard(firstCard);
-        while (!validFirstCard) {
+        while (!validFirstCard) { //as long as the first card is not valid (plus4), the card will be put back, the deck will be shuffled and another card will be put on the table
             cardDeck.add(firstCard);
             discardPile.getDiscardPile().clear();
             cardDeck.shuffleCards();
@@ -515,13 +474,13 @@ public class GameMethods {
             validFirstCard = isValidFirstCard(firstCard);
         }
 
-        if (firstCard.getType().equals(Type.RED_PASS) || firstCard.getType().equals(Type.GREEN_PASS) ||
+        if (firstCard.getType().equals(Type.RED_PASS) || firstCard.getType().equals(Type.GREEN_PASS) || //if a passcard is the first card on the discard pile, the first player will be skipped
                 firstCard.getType().equals(Type.BLUE_PASS) || firstCard.getType().equals(Type.YELLOW_PASS)) {
             System.out.println(currentPlayer.getName() + ", you have skip  this turn.");
             setPreviousPlayer(getPlayerByIndex(currentPlayerIndex));
             setBlocked(true);
             discardPileCardIsOfLastTurn = true;
-        } else if (firstCard.getType().equals(Type.RED_PLUS2) || firstCard.getType().equals(Type.YELLOW_PLUS2)
+        } else if (firstCard.getType().equals(Type.RED_PLUS2) || firstCard.getType().equals(Type.YELLOW_PLUS2) //firstplayer has to draw 2 cards and can not play out a card
                 || firstCard.getType().equals(Type.GREEN_PLUS2) || firstCard.getType().equals(Type.BLUE_PLUS2)) {
             System.out.println(currentPlayer.getName() + ", you have to draw 2 penalty cards and have to skip this turn.");
             plus2Card();
@@ -570,8 +529,7 @@ public class GameMethods {
                         cardToPlay = botPlaysCard();
                         currentPlayer.setPlayedCard(cardToPlay);
                     } else {
-                        int intCardID = input.nextInt();
-                        cardToPlay = currentPlayer.getCardByID(intCardID);
+                        cardToPlay = currentPlayer.getCardByID(HumanPlayerPlaysCard());
                         currentPlayer.setPlayedCard(cardToPlay);
                     }
                     colorChangeCard();
@@ -583,7 +541,7 @@ public class GameMethods {
 
     }
 
-    private static boolean isValidFirstCard(Card firstCard) {
+    private static boolean isValidFirstCard(Card firstCard) { //a plus4 card cannot be the first card in a round
         if (firstCard.getType().equals(Type.PLUS_4)) {
             return false;
         }
@@ -704,81 +662,7 @@ public class GameMethods {
     }
 
 
-    /*
-    public static boolean passCardCheck() {
-        Player currentPlayer = getCurrentPlayer();
-        Card c1 = currentPlayer.getPlayedCard();
-        Card c2 = discardPile.showLastCard();
-        boolean botharepassCards = false;
-        boolean lastLetterCard1 = c1.getType().name().endsWith("PASS");
-        boolean lastLetterCard2 = c2.getType().name().endsWith("PASS");
-        if (lastLetterCard1 == true && lastLetterCard2 == true) {
-            botharepassCards = true;
-        }
-        return botharepassCards;
-    }
-     */
-
-
-    /*
-    public static boolean PassCardCheckCardInHand() {
-        Player currentPlayer = getCurrentPlayer();
-        Card topcard = discardPile.showLastCard();
-        boolean botharepassCards = false;
-
-        for (Card card : currentPlayer.getCardsInHand()) {
-            boolean lastLetterCard1 = card.getType().name().endsWith("PASS");
-            boolean lastLetterCard2 = topcard.getType().name().endsWith("PASS");
-            if (lastLetterCard1 == true && lastLetterCard2 == true) {
-                botharepassCards = true;
-                break;
-            } else {
-                botharepassCards = false;
-            }
-        }
-        return botharepassCards;
-    }
-    */
-
-
-    /*
-    public static boolean plus2Check() {
-        Player currentPlayer = getCurrentPlayer();
-        Card c1 = currentPlayer.getPlayedCard();
-        Card c2 = discardPile.showLastCard();
-        boolean botharepassCards = false;
-        boolean lastLetterCard1 = c1.getType().name().endsWith("2");
-        boolean lastLetterCard2 = c2.getType().name().endsWith("2");
-        if (lastLetterCard1 == true && lastLetterCard2 == true) {
-            botharepassCards = true;
-        }
-        return botharepassCards;
-    }
-
-     */
-
-
-/*    public static boolean plus2CheckCardInHand() {
-        Player currentPlayer = getCurrentPlayer();
-        Card topcard = discardPile.showLastCard();
-        boolean bothArePlus2Cards = false;
-
-        for (Card card : currentPlayer.getCardsInHand()) {
-            boolean lastLetterCard1 = card.getType().name().endsWith("2");
-            boolean lastLetterCard2 = topcard.getType().name().endsWith("2");
-            if (lastLetterCard1 == true && lastLetterCard2 == true) {
-                bothArePlus2Cards = true;
-                break;
-            } else {
-                bothArePlus2Cards = false;
-            }
-        }
-        return bothArePlus2Cards;
-    }
- */
-
-
-    public static boolean hasValidCardToPlay() {
+    public static boolean hasValidCardToPlay() { //to check if the currentplayer has at least one valid card to make a move
         boolean isValid = false;
         Player currentPlayer = getCurrentPlayer();
         Card discard = getDiscardPile().showLastCard();
@@ -875,7 +759,7 @@ public class GameMethods {
         }
     }
 
-    public boolean sayUno() {
+    public boolean sayUno() { //the player who as only one card left has to type in "uno" (correctly), otherwise he will be penalized
         String string;
         boolean UNO = false;
         if (currentPlayer.cardsInHand.size() == 1) {
@@ -910,7 +794,7 @@ public class GameMethods {
         return isWinnerofTheRound;
     }
 
-    public void countPoints() {
+    public void countPoints() { //counts the points of the remaining cards in the other players hands
         int points = 0;
         Player winneroftheRound = null;
         for (Player p : playerList.getPlayerlist()) {
@@ -934,7 +818,7 @@ public class GameMethods {
 
     }
 
-    public boolean PlayerWantsToExitTheGame() {
+    public boolean PlayerWantsToExitTheGame() { //at the end of each round, the game can stop the game
         boolean exit = false;
         if (currentPlayer instanceof Human) {
             Scanner scanner = new Scanner(System.in);
@@ -958,10 +842,18 @@ public class GameMethods {
         for (Player p : playerList.getPlayerlist()) {
             if (p.getPoints() >= 500) {
                 System.out.println("The Game is over and " + p.getName() + " is the winner of the Game! Congrats!");
-                System.exit(0);
             }
         }
 
+    }
+    public boolean GameIsOver(){
+        boolean itsOver = false;
+        for (Player p : playerList.getPlayerlist()) {
+            if (p.getPoints() >= 500) {
+                itsOver = true;
+            }
+        }
+        return itsOver;
     }
 
 

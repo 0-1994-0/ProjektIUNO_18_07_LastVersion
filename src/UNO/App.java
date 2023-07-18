@@ -33,8 +33,8 @@ public class App {
         initialize(); //prepares the game
         printState(); // prints the card on top of the discard Pile
 
-        while (!exit) {
-            gameMethods.shuffleCardsWhenCardDeckIsEmpty();
+        while (!exit) { //game is played as long as no player chooses 'exit' or as long as there is no winner of the game
+            gameMethods.shuffleCardsWhenCardDeckIsEmpty(); //checks if the carddeck is empty and shuffles it if necessary
             readUserInput();
             updateState();
             printState();
@@ -45,6 +45,10 @@ public class App {
                     break;
                 }
                 gameMethods.GameWinner();
+                if(gameMethods.GameIsOver()){
+                    setExit(true);
+                    break;
+                }
                 gameMethods.shuffleCardsWhenCardDeckIsEmpty();
                 gameMethods.prepareNextRound();
                 printState();
