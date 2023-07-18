@@ -1,5 +1,6 @@
 package UNO;
 
+import java.sql.SQLException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -88,6 +89,9 @@ public class GameMethods {
     }
 
     Helpdesk helpdesk = new Helpdesk();
+    Random random = new Random();
+    int sessionDB = random.nextInt(30000);
+    int roundDB = 1;
 
     public void prepareGame() {  // creates the cards, shuffles them, puts the first card on the table
         cardDeck.createCards(Type.YELLOW);
@@ -801,6 +805,7 @@ public class GameMethods {
     public void countPoints() { //counts the points of the remaining cards in the other players hands
         int points = 0;
         Player winneroftheRound = null;
+        Database database = new Database();
         for (Player p : playerList.getPlayerlist()) {
 
             for (Card c : p.cardsInHand) {
@@ -819,7 +824,13 @@ public class GameMethods {
         }
         winneroftheRound.setPoints(winneroftheRound.getPoints() + points);
         System.out.println(winneroftheRound.getName() + ", you receive " + points + " points this round! Total points: " + winneroftheRound.getPoints());
-
+        try {
+            //database.insert_DB(p.getName(), roundDB, sessionDB, p.getPoints());
+            database.insert_DB(winneroftheRound.getName(), roundDB, sessionDB, winneroftheRound.getPoints());
+            roundDB++;
+        } catch (SQLException e) {
+            e.getMessage();
+        }
     }
 
     public boolean PlayerWantsToExitTheGame() { //at the end of each round, the game can stop the game

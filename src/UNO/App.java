@@ -29,7 +29,7 @@ public class App {
 
     //die Gameloop
     public void Run() {
-
+        Database.createDB();
         initialize(); //prepares the game
         printState(); // prints the card on top of the discard Pile
 
