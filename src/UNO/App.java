@@ -35,24 +35,24 @@ public class App {
 
         while (!exit) { //game is played as long as no player chooses 'exit' or as long as there is no winner of the game
             gameMethods.shuffleCardsWhenCardDeckIsEmpty(); //checks if the carddeck is empty and shuffles it if necessary
-            readUserInput();
-            updateState();
-            printState();
+            readUserInput(); //player plays card
+            updateState(); // checks if move is valid, if yes, puts the card onto the discardpile. Also checks if a player has to say "uno" and if there is already a winner of the the round
+            printState(); // prints the top card of the discard pile
             if (roundOver) {
-                gameMethods.countPoints();
-                if (gameMethods.PlayerWantsToExitTheGame()) {
+                gameMethods.countPoints(); // after round is over, the points are counted
+                if (gameMethods.PlayerWantsToExitTheGame()) { //player can opt to stop the game
                     setExit(true);
                     break;
                 }
-                gameMethods.GameWinner();
-                if(gameMethods.GameIsOver()){
+                gameMethods.GameWinner(); //checks if there is already a winner of the Game and prints his name & points
+                if(gameMethods.GameIsOver()){ //if a player has at least 500 points, the Game is over
                     setExit(true);
                     break;
                 }
-                gameMethods.shuffleCardsWhenCardDeckIsEmpty();
-                gameMethods.prepareNextRound();
+                gameMethods.shuffleCardsWhenCardDeckIsEmpty(); //checks if the card deck is empty and shuffles the cards if necessary
+                gameMethods.prepareNextRound();//
                 printState();
-                setRoundOver(false);
+                setRoundOver(false); // reset to false to read the next user's input
             }
         }
     }

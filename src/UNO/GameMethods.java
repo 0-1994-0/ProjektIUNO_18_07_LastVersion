@@ -397,8 +397,10 @@ public class GameMethods {
                             currentPlayer.setPlayedCard(cardToPlay);
                         }
                         colorChangeCard();
+                        discardPileCardIsOfLastTurn = false;
                     } else {
                         System.out.println("Sorry, " + currentPlayer.getName() + " you STILL don't have a card to play out this turn.");
+                        discardPileCardIsOfLastTurn = true;
                     }
                 }
             }
@@ -432,7 +434,7 @@ public class GameMethods {
         Card topCard = discardPile.showLastCard();
 
         try {
-            if (topCard.getType().equals(Type.YELLOW_REVERSE) || topCard.getType().equals(Type.BLUE_REVERSE)
+            if (!discardPileCardIsOfLastTurn && topCard.getType().equals(Type.YELLOW_REVERSE) || topCard.getType().equals(Type.BLUE_REVERSE)
                     || topCard.getType().equals(Type.RED_REVERSE) || topCard.getType().equals(Type.GREEN_REVERSE)) {
                 currentPlayerIndex = isReverseCard();
             } else if (!discardPileCardIsOfLastTurn && (topCard.getType().equals(Type.YELLOW_PASS) || topCard.getType().equals(Type.BLUE_PASS)
@@ -535,6 +537,7 @@ public class GameMethods {
                     colorChangeCard();
                 } else {
                     System.out.println("Sorry, " + currentPlayer.getName() + " you don't have a card to play out this turn.");
+                    discardPileCardIsOfLastTurn = true;
                 }
             }
         }
@@ -720,7 +723,8 @@ public class GameMethods {
             discardPile.addCardIn(0, playedCard);
             currentPlayer.cardsInHand.remove(playedCard);
         } else {
-            System.out.println("Chosen card is invalid!!"); //just put this one here so i know if i got in this part of the code
+            System.out.println("Chosen card is invalid!! Now you have to draw a penalty card!");
+            currentPlayer.cardsInHand.add(cardDeck.dealCard());
         }
     }
 

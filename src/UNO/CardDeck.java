@@ -10,13 +10,13 @@ public class CardDeck {
     public void createCards(Type type) {
         for (int i = 0; i < 10; i++) {
             if (type == Type.YELLOW || type == Type.BLUE || type == Type.GREEN || type == Type.RED) {
-                cardDeck.add(new Card(type, i, i));
+                cardDeck.add(new Card(type, i));
             }
         }
 
         for (int i = 1; i < 10; i++) {
             if (type == Type.YELLOW || type == Type.BLUE || type == Type.GREEN || type == Type.RED) {
-                cardDeck.add(new Card(type, i, i));
+                cardDeck.add(new Card(type, i));
             }
 
         }

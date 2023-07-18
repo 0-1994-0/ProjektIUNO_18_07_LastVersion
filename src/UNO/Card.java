@@ -14,16 +14,14 @@ public class Card {
         return CardID;
     }
 
-    public Card(Type type, int number, int value) {
+    public Card(Type type, int number) {
         this.type = type;
         this.number = number;
-        this.value = value;
         this.CardID = counter++;
     }
 
-    public Card(Type type, int value) {
+    public Card(Type type) {
         this.type = type;
-        this.value = value;
         this.CardID = counter++;
     }
 
@@ -60,12 +58,6 @@ public class Card {
         this.number = number;
     }
 
-    public int getValue() {
-        return value;
-    }
 
-    public void setValue(int value) {
-        this.value = value;
-    }
 
 }
